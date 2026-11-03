@@ -1,6 +1,7 @@
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { trackWaitlistSignup } from "@/lib/meta-pixel";
 
 /**
  * Waitlist signup — posts to the Hook API's public waitlist endpoint.
@@ -157,7 +158,12 @@ export default function WaitlistComponent({
         return;
       }
 
-      setResult({ alreadyJoined: Boolean(body.data?.alreadyJoined) });
+      const alreadyJoined = Boolean(body.data?.alreadyJoined);
+
+      // A repeat submission isn't a new lead — only count first-time signups.
+      if (!alreadyJoined) trackWaitlistSignup();
+
+      setResult({ alreadyJoined });
     } catch {
       // Network failure / offline / CORS.
       setError("Couldn't reach the server. Please check your connection.");
