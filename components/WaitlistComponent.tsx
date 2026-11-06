@@ -1,7 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { trackWaitlistSignup } from "@/lib/meta-pixel";
 
 /**
  * Waitlist signup — posts to the Hook API's public waitlist endpoint.
@@ -159,9 +158,6 @@ export default function WaitlistComponent({
       }
 
       const alreadyJoined = Boolean(body.data?.alreadyJoined);
-
-      // A repeat submission isn't a new lead — only count first-time signups.
-      if (!alreadyJoined) trackWaitlistSignup();
 
       setResult({ alreadyJoined });
     } catch {
